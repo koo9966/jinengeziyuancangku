@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1">
+    <link href="./css/style.css" rel="stylesheet">
+    <link href="./js/fancybox.css" rel="stylesheet">
+    <script src="./js/fancybox.js"></script>
+    <title>相册</title>
+</head>
+
+<body>
+    <div id="menu">
+        <span id="photo-span" onclick="showPhotos()" class="active">照片</span>
+        <span id="video-span" onclick="showVideos()">视频</span>
+    </div>
+    <!-- 照片列表 -->
+    <div class="container"></div>
+    <!-- 视频列表 -->
+    <div class="item container">
+        <!-- 视频缩略图 -->
+        <div class="box">
+            <a href="#" onclick="toggleVideo(event, 'modal1')"><img src="http://zyling.top/2/Fc/1.jpg"></a>
+        </div>
+        <div class="box">
+            <a href="#" onclick="toggleVideo(event, 'modal2')"><img src="http://zyling.top/2/Fc/2.jpg"></a>
+        </div>
+        <div class="box">
+            <a href="#" onclick="toggleVideo(event, 'modal3')"><img src="http://zyling.top/2/Fc/3.jpg"></a>
+        </div>
+        <div class="box">
+            <a href="#" onclick="toggleVideo(event, 'modal4')"><img src="http://zyling.top/2/Fc/4.jpg"></a>
+        </div>
+        <div class="box">
+            <a href="#" onclick="toggleVideo(event, 'modal5')"><img src="http://zyling.top/2/Fc/5.jpg"></a>
+        </div>
+        <div class="box">
+            <a href="#" onclick="toggleVideo(event, 'modal6')"><img src="http://zyling.top/2/Fc/6.jpg"></a>
+        </div>
+        <!-- 视频.mp4 -->
+        <div id="modals" class="modals">
+            <!-- 使用循环生成多个视频模态框 -->
+        </div>
+    </div>
+    <script>
+        // 获取照片和视频列表元素
+        const photoList = document.querySelector('.container');
+        const videoList = document.querySelectorAll('.item');
+        // 隐藏所有视频列表项
+        videoList.forEach(video => {
+            video.style.display = 'none';
+        });
+        // 显示照片列表项
+        function showPhotos() {
+            photoList.style.display = 'block';
+            videoList.forEach(video => {
+                video.style.display = 'none';
+            });
+        }
+        // 显示视频列表项
+        function showVideos() {
+            photoList.style.display = 'none';
+            videoList.forEach(video => {
+                video.style.display = 'block';
+            });
+        }
+        //视频相关逻辑
+        const numOfVideos = 6; // 视频数量
+
+        function generateModals() {
+            const modalsContainer = document.getElementById("modals");
+            for (let i = 1; i <= numOfVideos; i++) {
+                const modal = document.createElement("div");
+                modal.id = `modal${i}`;
+                modal.className = "modal";
+
+                const modalContent = document.createElement("div");
+                modalContent.className = "modal-content";
+
+                const video = document.createElement("video");
+                video.id = `video${i}`;
+                video.className = "modal-video";
+                video.controls = true;
+
+                const source = document.createElement("source");
+                source.src = `http://zyling.top/2/video/${i}.mp4`;
+                source.type = "video/mp4";
+                video.appendChild(source);
+
+                const closeButton = document.createElement("span");
+                closeButton.className = "close-button";
+                closeButton.innerHTML = "&times;";
+                closeButton.onclick = () => closeModal(modal.id);
+
+                modalContent.appendChild(video);
+                modalContent.appendChild(closeButton);
+                modal.appendChild(modalContent);
+                modalsContainer.appendChild(modal);
+            }
+        }
+
+        function toggleVideo(event, modalId) {
+            event.preventDefault();
+            event.stopPropagation(); // 阻止事件冒泡
+
+            const modal = document.getElementById(modalId);
+            modal.style.display = "block";
+            const video = modal.querySelector("video");
+            video.play();
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const video = modal.querySelector("video");
+            video.pause();
+            modal.style.display = "none";
+        }
+
+        generateModals(); // 生成视频模态框
+
+        document.addEventListener('click', (event) => {
+            if (event.target.matches('a')) {
+                const modalId = event.target.getAttribute('onclick').match(/'([^']+)'/)[1];
+                toggleVideo(event, modalId);
+            } else if (event.target.matches('.modal')) {
+                const modalId = event.target.id;
+                closeModal(modalId);
+            }
+        });
+
+        // 相册相关逻辑
+        var container = document.querySelector('.container');
+        var imageCount = 34; // 图片数量
+        var imageIndexes = Array.from({
+            length: imageCount
+        }, (_, i) => i + 1);
+
+        // 将图片索引数组随机排序
+        imageIndexes.sort(function() {
+            return Math.random() - 0.5;
+        });
+
+        for (var i = 0; i < imageCount; i++) {
+            var img = document.createElement('img');
+            img.src = 'http://zyling.top/2/img/' + imageIndexes[i] + '.jpg';
+            var link = document.createElement('a');
+
+            link.setAttribute('data-fancybox', 'images');
+            link.href = 'http://zyling.top/2/img/' + imageIndexes[i] + '.jpg';
+            link.appendChild(img);
+            var box = document.createElement('div');
+            box.className = 'box';
+            box.appendChild(link);
+            container.appendChild(box);
+        }
+
+        // 显示照片列表
+        function showPhotos() {
+            var photoList = document.querySelector('.container');
+            var videoList = document.querySelectorAll('.item');
+            photoList.style.display = 'block';
+            videoList.forEach(video => {
+                video.style.display = 'none';
+            });
+            document.querySelector('#photo-span').classList.add('active');
+            document.querySelector('#video-span').classList.remove('active');
+        }
+
+        // 显示视频列表
+        function showVideos() {
+            var photoList = document.querySelector('.container');
+            var videoList = document.querySelectorAll('.item');
+            photoList.style.display = 'none';
+            videoList.forEach(video => {
+                video.style.display = 'block';
+            });
+            document.querySelector('#photo-span').classList.remove('active');
+            document.querySelector('#video-span').classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
